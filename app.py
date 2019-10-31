@@ -1,11 +1,8 @@
-from flask import Flask, request
+from flask import Flask, request, abort
 from flask_restful import Api, Resource
-from config import Config
-from connection import MysqlCon
-from datetime import datetime, date
-import requests
-import math
+from config import baseCurrency
 import time
+import json
 
 app = Flask(__name__, static_url_path='')
 api = Api(app)
@@ -25,53 +22,35 @@ def after_request(response):
     return response
 
 
-class Currency(Resource):
+class All(Resource):
     def get(self):
         # return all pair
-        mysqlCon = MysqlCon()
-        result = mysqlCon.rQuery('SELECT currencyId, currencyValue FROM currency')
-        cur = {}
-        for (currencyId, currencyValue) in result:
-            cur[currencyId] = str(currencyValue)
-        return cur
+        try:
+            with open('cache_{}.json'.format(baseCurrency), 'r') as currenciesFile:
+                currencies = json.load(currenciesFile)
+        except:
+            abort(404)
+        return currencies
 
-    def post(self):
-        # requesting and store cache
-        t = datetime.now().time()
-        h = t.hour
-        m = t.minute
-        if h >= 12: h -= 12
-        i = (h * 12) + math.floor(m / 5) #12 times per hour (every 5 min)
-        i *= 2 #because do 2 currencies at one shot
+class Pair(Resource):
+    def get(self, a, b):
+        try:
+            with open('cache_{}.json'.format(baseCurrency), 'r') as currenciesFile:
+                currencies = json.load(currenciesFile)
+        except:
+            abort(404)
 
-        if i >= len(Config.currencies):
-            return {}
+        currencies[baseCurrency] = 1
 
-        dt = date.today().isoformat()
-        ca = Config.currencies[i]
-        cb = Config.currencies[i + 1]
+        if currencies[a] == None or currencies[b] == None:
+            abort(404)
+        
+        c = 1 / currencies[a] * currencies[b]
+        
+        return {'{}-{}'.format(a, b): c}
 
-        url = 'https://free.currconv.com/api/v7/convert?apiKey={apikey}&q={base}_{target1},{base}_{target2}&compact=ultra'.format(
-            apikey=Config.apikey,
-            base=Config.baseCurrency,
-            target1=ca,
-            target2=cb
-        )
-       
-        r = requests.get(url)
-        if r.status_code == 200:
-            cur = r.json()
-            try:
-                va = cur['EUR_{}'.format(ca)][dt]
-                vb = cur['EUR_{}'.format(cb)][dt]
-                #store va vb
-            except:
-                pass
-
-        return {}
-
-
-api.add_resource(Currency, '/currency')
+api.add_resource(All, '/currency')
+api.add_resource(Pair, '/currency/<string:a>/<string:b>')
 
 if __name__ == '__main__':
     app.run(debug=True)
