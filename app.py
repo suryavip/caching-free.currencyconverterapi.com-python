@@ -37,8 +37,6 @@ class Currency(Resource):
 
     def post(self):
         # requesting and store cache
-        mysqlCon = MysqlCon()
-
         t = datetime.now().time()
         h = t.hour
         m = t.minute
@@ -66,14 +64,9 @@ class Currency(Resource):
             try:
                 va = cur['EUR_{}'.format(ca)][dt]
                 vb = cur['EUR_{}'.format(cb)][dt]
-                mysqlCon.insertQuery('currency', [
-                    {'currencyId': ca, 'currencyValue': va, 'currencyUpdate': datetime.now()},
-                    {'currencyId': cb, 'currencyValue': vb, 'currencyUpdate': datetime.now()}
-                ], updateOnDuplicate=True)
+                #store va vb
             except:
                 pass
-
-            mysqlCon.db.commit()
 
         return {}
 
