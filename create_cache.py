@@ -4,7 +4,6 @@ import json
 from config import baseCurrency, numberOfRequests
 
 log = open('create_cache.log', 'a')
-log.write('start\n')
 
 # getting apikey
 with open('apikey.txt', 'r') as apikeyFile:
@@ -43,7 +42,6 @@ for x in range(0, numberOfRequests * 2, 2):
         target1=target[x],
         target2=target[x+1]
     )
-    log.write('getting {} and {}\n'.format(target[x], target[x+1]))
     try:
         r = requests.get(url)
         if r.status_code == 200:
@@ -61,7 +59,5 @@ with open('cache_{}.json'.format(baseCurrency), 'w') as cacheFile:
 # write index position to file
 with open('index', 'w') as indexFile:
     indexFile.write('{}'.format(index))
-
-log.write('finish\n')
 
 log.close()
