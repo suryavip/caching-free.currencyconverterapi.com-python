@@ -1,4 +1,7 @@
 apikey.txt
+index
+currencies.json
+cache_*.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
