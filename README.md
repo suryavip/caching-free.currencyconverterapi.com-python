@@ -2,7 +2,7 @@
 Periodically send request to https://free.currencyconverterapi.com without exceeding "Requests per Hour" limit and cache the result. Useful for application that don't need realtime and accurate conversion rate.
 
 # Setup
-1. Fullfill the pip requirements by doing (only if you want to use the REST API):
+1. Fullfill the pip requirements by doing:
 	>`pip install -r requirements.txt`
 1. Make sure you have your own API key from https://free.currencyconverterapi.com
 1. Put your API key into `apikey.txt` file
