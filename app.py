@@ -34,6 +34,9 @@ class All(Resource):
 
 class Pair(Resource):
     def get(self, a, b):
+        a = a.upper()
+        b = b.upper()
+
         try:
             with open('cache_{}.json'.format(baseCurrency), 'r') as currenciesFile:
                 currencies = json.load(currenciesFile)
@@ -42,7 +45,7 @@ class Pair(Resource):
 
         currencies[baseCurrency] = 1
 
-        if currencies[a] == None or currencies[b] == None:
+        if a not in currencies or b not in currencies:
             abort(404)
         
         c = 1 / currencies[a] * currencies[b]
