@@ -7,7 +7,7 @@ Periodically send request to https://free.currencyconverterapi.com without excee
 1. Make sure you have your own API key from https://free.currencyconverterapi.com
 1. Put your API key into `apikey.txt` file
 1. Adjust your `baseCurrency` in `config.py`
-1. Adjust your `numberOfRequests` in `config.py`. This will control how much request to be sent every time `create_cache.py` run. For example, if I set a cron job to run `create_cache.py` every 5 minutes, there will be 72 request sent in 1 hour (60 minutes / 5 minutes * 6 requests) which is still below the 100 requests per hour limit. Since each request will ask for 2 pairs of currency, 144 pairs will be updated each time `create_cache.py` run.
+1. Adjust your `numberOfRequests` in `config.py`. This will control how much request to be sent every time `create_cache.py` run. For example, if I set a cron job to run `create_cache.py` every 5 minutes, there will be 72 request sent in 1 hour (60 minutes / 5 minutes * 6 requests) which is still below the 100 requests per hour limit. Since each request will ask for 2 pairs of currency, 144 pairs will be updated every hour.
 1. Run `update_currencies.py` to get all currencies offered by https://free.currencyconverterapi.com. You can remove currencies that you don't need from `currencies.json`.
 
 # Usage
